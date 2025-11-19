@@ -1,0 +1,199 @@
+# ==========================
+# Banano node configuration - PROPERLY FORMATTED
+# This config uses the CORRECT TOML paths that the code actually reads
+# ==========================
+
+[node]
+database_backend = "rocksdb"
+
+# ============================================================================
+# Threading - USE YOUR 24 CORES!
+# ============================================================================
+io_threads = 12
+network_threads = 12
+signature_checker_threads = 12
+work_threads = 8
+
+# ============================================================================
+# Bootstrap Connections
+# ============================================================================
+bootstrap_connections = 16
+bootstrap_connections_max = 128
+bootstrap_fraction_numerator = 1
+
+# ============================================================================
+# Bandwidth and Connection Limits
+# ============================================================================
+bandwidth_limit = 10485760
+tcp_incoming_connections_max = 2048
+tcp_io_timeout = 15
+
+# ============================================================================
+# Memory and Caching
+# ============================================================================
+confirmation_history_size = 4096
+unchecked_cutoff_time = 28800
+use_memory_pools = true
+lmdb_max_dbs = 128
+
+# ============================================================================
+# Voting - DISABLED during bootstrap
+# ============================================================================
+enable_voting = false
+vote_generator_delay = 100
+vote_generator_threshold = 3
+vote_minimum = "1000000000000000000000000000000000"
+
+# ============================================================================
+# Block Processing
+# ============================================================================
+block_processor_batch_max_time = 5000
+
+# ============================================================================
+# Banano Network Settings
+# ============================================================================
+peering_port = 7071
+preconfigured_peers = [
+    "banano.cc",
+    "vault.banano.cc",
+    "kaliumapi.appditto.com",
+    "booster.dev-ptera.com"
+]
+
+preconfigured_representatives = [
+    "ban_1ka1ium4pfue3uxtntqsrib8mumxgazsjf58gidh1xeo5te3whsq8z476goo",
+    "ban_1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcgjiij94xr",
+    "ban_3p3sp1ynb5i3qxmqoha3pt79hyk8gxhtr58tk51qctwyyik6hy4dbbqbanan",
+    "ban_1fomoz167m7o38gw4rzt7hz67oq6itejpt4yocrfywujbpatd711cjew8gjj",
+    "ban_19potasho7ozny8r1drz3u3hb3r97fw4ndm4hegdsdzzns1c3nobdastcgaa",
+    "ban_1oaocnrcaystcdtaae6woh381wftyg4k7bespu19m5w18ze699refhyzu6bo"
+]
+
+online_weight_minimum = "60000000000000000000000000000000000000"
+online_weight_quorum = 67
+receive_minimum = "1000000000000000000000000"
+
+# ============================================================================
+# Networking
+# ============================================================================
+allow_local_peers = false
+external_address = "::"
+external_port = 0
+pow_sleep_interval = 0
+work_peers = []
+backup_before_upgrade = false
+password_fanout = 1024
+
+# ============================================================================
+# CRITICAL: Active Elections - CORRECT TOML PATH!
+# ============================================================================
+# NOTE: This MUST be under [node.active_elections] subsection, NOT [node]!
+[node.active_elections]
+# Maximum number of simultaneous active elections
+# THIS IS THE KEY FIX - increase from 5000 to 50000
+size = 50000
+
+# Hinted elections limit as percentage of size
+# 20% of 50000 = 10,000 hinted elections (was 1,000)
+hinted_limit_percentage = 20
+
+# Optimistic elections limit as percentage of size
+# 10% of 50000 = 5,000 optimistic elections (was 500)
+optimistic_limit_percentage = 10
+
+# Maximum confirmation history size
+confirmation_history_size = 4096
+
+# Maximum cache size for recently_confirmed
+confirmation_cache = 131072
+
+# Maximum size of election winner details set
+max_election_winners = 32768
+
+# ============================================================================
+# WebSocket
+# ============================================================================
+[node.websocket]
+address = "::1"
+enable = false
+port = 7078
+
+# ============================================================================
+# RPC
+# ============================================================================
+[rpc]
+enable = true
+enable_sign_hash = false
+
+# ============================================================================
+# Logging - reduced for performance
+# ============================================================================
+[node.logging]
+flush = false
+bulk_pull = false
+insufficient_work = true
+ledger = false
+ledger_duplicate = false
+network = true
+network_keepalive = false
+network_message = false
+node_lifetime_tracing = false
+max_size = 134217728
+min_time_between_output = 5000
+rotation_size = 4194304
+single_line_record = true
+timing = false
+work_generation_time = false
+vote = false
+
+# ============================================================================
+# Diagnostics
+# ============================================================================
+[node.diagnostics.txn_tracking]
+enable = false
+ignore_writes_below_block_processor_max_time = true
+min_read_txn_time = 5000
+min_write_txn_time = 500
+
+# ============================================================================
+# Statistics
+# ============================================================================
+[node.statistics.sampling]
+enable = false
+capacity = 0
+interval = 0
+
+[node.statistics.log]
+interval_counters = 0
+interval_samples = 0
+
+# ============================================================================
+# IPC
+# ============================================================================
+[node.ipc.local]
+enable = false
+allow_unsafe = false
+io_timeout = 15
+path = "/tmp/banano"
+
+[node.ipc.tcp]
+enable = false
+io_timeout = 15
+port = 7077
+
+# ============================================================================
+# HTTP Callback
+# ============================================================================
+[node.httpcallback]
+address = ""
+port = 0
+target = ""
+
+# ============================================================================
+# OpenCL
+# ============================================================================
+[opencl]
+enable = false
+device = 0
+platform = 0
+threads = 1048576

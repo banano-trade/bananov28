@@ -41,7 +41,8 @@ public:
 
 public:
 	// Maximum number of simultaneous active elections (AEC size)
-	std::size_t size{ 5000 };
+	// Increased from 5000 to 50000 to fix slow bootstrapping/cementing during initial sync
+	std::size_t size{ 50000 };
 	// Limit of hinted elections as percentage of `active_elections_size`
 	std::size_t hinted_limit_percentage{ 20 };
 	// Limit of optimistic elections as percentage of `active_elections_size`
