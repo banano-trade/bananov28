@@ -1,0 +1,385 @@
+# ==========================
+# Banano node configuration - OPTIMIZED FOR FAST BOOTSTRAPPING
+# Based on REAL configuration options that actually exist
+# Hardware: 24 cores, good RAM
+# ==========================
+
+[node]
+
+# Database backend (use RocksDB for better performance)
+database_backend = "rocksdb"
+
+# ============================================================================
+# CRITICAL: Active elections size - THIS IS THE KEY BOTTLENECK!
+# ============================================================================
+# Default is around 5000, increase to 50000 to handle more simultaneous confirmations
+# This is the MOST IMPORTANT setting for your cementing problem
+# type:uint64,[250..]
+active_elections_size = 50000
+
+# ============================================================================
+# Block Processor - How long it can process blocks before yielding
+# ============================================================================
+# Increase from default 500ms to 5000ms for better throughput during bootstrap
+# type:milliseconds
+block_processor_batch_max_time = 5000
+
+# ============================================================================
+# Bootstrap Connections - More connections = faster sync
+# ============================================================================
+# Number of outbound bootstrap connections. Must be a power of 2.
+# type:uint64
+bootstrap_connections = 16
+
+# Maximum number of inbound bootstrap connections
+# type:uint64
+bootstrap_connections_max = 128
+
+# Change bootstrap threshold (online stake / 256 * bootstrap_fraction_numerator)
+# type:uint32
+bootstrap_fraction_numerator = 1
+
+# ============================================================================
+# Threading - USE YOUR 24 CORES!
+# ============================================================================
+# Number of threads dedicated to I/O operations
+# Default is 4, increase to 12 to utilize your CPU
+# type:uint64
+io_threads = 12
+
+# Number of threads dedicated to processing network messages
+# Default is 4, increase to 12 for better network throughput
+# type:uint64
+network_threads = 12
+
+# Number of additional threads dedicated to signature verification
+# Default is 3, increase to 12 for faster block validation
+# type:uint64
+signature_checker_threads = 12
+
+# Number of threads dedicated to CPU generated work
+# Set to 8 (keep some cores free for other operations)
+# type:uint64
+work_threads = 8
+
+# ============================================================================
+# Bandwidth and Connection Limits
+# ============================================================================
+# Outbound traffic limit in bytes/sec (5 MB/s default, increase to 10 MB/s)
+# type:uint64
+bandwidth_limit = 10485760
+
+# Maximum number of incoming TCP connections
+# type:uint64
+tcp_incoming_connections_max = 2048
+
+# Timeout for TCP connect-, read- and write operations
+# type:seconds
+tcp_io_timeout = 15
+
+# ============================================================================
+# Memory and Caching
+# ============================================================================
+# Maximum confirmation history size
+# type:uint64
+confirmation_history_size = 4096
+
+# Number of seconds unchecked entry survives before being cleaned
+# Keep longer during bootstrap to avoid re-downloading
+# type:seconds
+unchecked_cutoff_time = 28800
+
+# If true, allocate memory from memory pools (better performance)
+# type:bool
+use_memory_pools = true
+
+# Maximum open lmdb databases
+# type:uint64
+lmdb_max_dbs = 128
+
+# ============================================================================
+# Voting Configuration (DISABLE during bootstrap to save resources)
+# ============================================================================
+# Enable or disable voting. Enabling voting requires additional system resources.
+# Disable this during bootstrap since you're not a representative
+# type:bool
+enable_voting = false
+
+# Delay before votes are sent to allow for better bundling of hashes in votes
+# type:milliseconds
+vote_generator_delay = 100
+
+# Number of bundled hashes required for an additional generator delay
+# type:uint64,[1..11]
+vote_generator_threshold = 3
+
+# Do not vote if delegated weight is under this threshold
+# type:string,amount,raw
+vote_minimum = "1000000000000000000000000000000000"
+
+# ============================================================================
+# Banano Network Settings
+# ============================================================================
+# Node peering port for Banano (NOT 7075 like Nano!)
+# type:uint16
+peering_port = 7071
+
+# Banano preconfigured peers (use Banano network peers)
+# type:array of strings
+preconfigured_peers = [
+    "banano.cc",
+    "vault.banano.cc",
+    "kaliumapi.appditto.com",
+    "booster.dev-ptera.com"
+]
+
+# Banano preconfigured representatives (Banano reps, NOT Nano!)
+# type:array of strings
+preconfigured_representatives = [
+    "ban_1ka1ium4pfue3uxtntqsrib8mumxgazsjf58gidh1xeo5te3whsq8z476goo",
+    "ban_1bananobh5rat99qfgt1ptpieie5swmoth87thi74qgbfrij7dcgjiij94xr",
+    "ban_3p3sp1ynb5i3qxmqoha3pt79hyk8gxhtr58tk51qctwyyik6hy4dbbqbanan",
+    "ban_1fomoz167m7o38gw4rzt7hz67oq6itejpt4yocrfywujbpatd711cjew8gjj",
+    "ban_19potasho7ozny8r1drz3u3hb3r97fw4ndm4hegdsdzzns1c3nobdastcgaa",
+    "ban_1oaocnrcaystcdtaae6woh381wftyg4k7bespu19m5w18ze699refhyzu6bo"
+]
+
+# Online weight minimum required to confirm block (for Banano network)
+# type:string,amount,raw
+online_weight_minimum = "60000000000000000000000000000000000000"
+
+# Percentage of votes required to rollback blocks
+# type:uint64
+online_weight_quorum = 67
+
+# Minimum receive amount (Banano has lower amounts than Nano)
+# type:string,amount,raw
+receive_minimum = "1000000000000000000000000"
+
+# ============================================================================
+# Networking
+# ============================================================================
+# Enable or disable local host peering
+# type:bool
+allow_local_peers = false
+
+# The external address of this node (NAT). If not set, uses UPnP.
+# type:string,ip
+external_address = "::"
+
+# The external port number of this node (NAT). If not set, uses UPnP.
+# type:uint16
+external_port = 0
+
+# ============================================================================
+# Work Generation
+# ============================================================================
+# The amount to sleep after each batch of POW calculations
+# type:nanoseconds
+pow_sleep_interval = 0
+
+# A list of "address:port" entries to identify work peers
+work_peers = []
+
+# ============================================================================
+# Database Backup
+# ============================================================================
+# Backup the ledger database before performing upgrades
+# type:bool
+backup_before_upgrade = false
+
+# ============================================================================
+# Security / Other
+# ============================================================================
+# Password fanout factor
+# type:uint64
+password_fanout = 1024
+
+# ============================================================================
+# WebSocket (disabled unless you need it)
+# ============================================================================
+[node.websocket]
+# WebSocket server bind address
+# type:string,ip
+address = "::1"
+
+# Enable or disable WebSocket server
+# type:bool
+enable = false
+
+# WebSocket server listening port
+# type:uint16
+port = 7078
+
+# ============================================================================
+# RPC (enabled for monitoring)
+# ============================================================================
+[rpc]
+# Enable or disable RPC (you need this for block_count queries)
+# type:bool
+enable = true
+
+# Allow or disallow signing of hashes
+# type:bool
+enable_sign_hash = false
+
+# ============================================================================
+# Logging (reduced for better performance)
+# ============================================================================
+[node.logging]
+# If enabled, immediately flush new entries to log file
+# Disable for better performance
+# type:bool
+flush = false
+
+# Log bulk pull errors and messages
+# type:bool
+bulk_pull = false
+
+# Log if insufficient work is detected
+# type:bool
+insufficient_work = true
+
+# Log ledger related messages
+# type:bool
+ledger = false
+
+# Log when a duplicate block is attempted inserted into the ledger
+# type:bool
+ledger_duplicate = false
+
+# Log network related messages
+# type:bool
+network = true
+
+# Log keepalive related messages
+# type:bool
+network_keepalive = false
+
+# Log network errors and message details
+# type:bool
+network_message = false
+
+# Log node startup and shutdown messages
+# type:bool
+node_lifetime_tracing = false
+
+# Maximum log file size in bytes
+# type:uint64
+max_size = 134217728
+
+# Minimum time that must pass for low priority entries to be logged (increase to reduce log spam)
+# type:milliseconds
+min_time_between_output = 5000
+
+# Log file rotation size in character count
+# type:uint64
+rotation_size = 4194304
+
+# Keep log entries on single lines
+# type:bool
+single_line_record = true
+
+# Log detailed timing information for various node operations
+# type:bool
+timing = false
+
+# Log work generation timing information
+# type:bool
+work_generation_time = false
+
+# Vote logging - DISABLE for performance
+# type:bool
+vote = false
+
+# ============================================================================
+# Diagnostics (disabled for performance)
+# ============================================================================
+[node.diagnostics.txn_tracking]
+# Enable or disable database transaction tracing
+# type:bool
+enable = false
+
+# Ignore any block processor writes less than block_processor_batch_max_time
+# type:bool
+ignore_writes_below_block_processor_max_time = true
+
+# Log stacktrace when read transactions are held longer than this duration
+# type:milliseconds
+min_read_txn_time = 5000
+
+# Log stacktrace when write transactions are held longer than this duration
+# type:milliseconds
+min_write_txn_time = 500
+
+# ============================================================================
+# Statistics (disabled for performance)
+# ============================================================================
+[node.statistics.sampling]
+# Enable or disable sampling
+# type:bool
+enable = false
+
+# How many sample intervals to keep in the ring buffer
+# type:uint64
+capacity = 0
+
+# Sample interval
+# type:milliseconds
+interval = 0
+
+[node.statistics.log]
+# How often to log counters. 0 disables logging.
+# type:milliseconds
+interval_counters = 0
+
+# How often to log samples. 0 disables logging.
+# type:milliseconds
+interval_samples = 0
+
+# ============================================================================
+# IPC (disabled unless needed)
+# ============================================================================
+[node.ipc.local]
+enable = false
+allow_unsafe = false
+io_timeout = 15
+path = "/tmp/banano"
+
+[node.ipc.tcp]
+enable = false
+io_timeout = 15
+port = 7077
+
+# ============================================================================
+# HTTP Callback (disabled unless needed)
+# ============================================================================
+[node.httpcallback]
+# Callback address
+# type:string,ip
+address = ""
+
+# Callback port number
+# type:uint16
+port = 0
+
+# Callback target path
+# type:string,uri
+target = ""
+
+# ============================================================================
+# OpenCL (disabled unless you have GPU)
+# ============================================================================
+[opencl]
+# Enable or disable OpenCL work generation
+# type:bool
+enable = false
+
+# OpenCL device identifier
+device = 0
+
+# OpenCL platform identifier
+platform = 0
+
+# OpenCL thread count
+threads = 1048576
