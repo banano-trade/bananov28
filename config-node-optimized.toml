@@ -1,0 +1,211 @@
+# Optimized Banano Node Configuration for Faster Bootstrapping
+# This configuration is specifically tuned to speed up the cementing process
+# when dealing with large backlogs during initial sync
+
+# ============================================================================
+# ACTIVE ELECTIONS - Increased to handle more simultaneous confirmations
+# ============================================================================
+[node.active_elections]
+# Increased from default 5000 to 10000 to allow more blocks to be confirmed simultaneously
+# This helps clear the backlog faster during bootstrap
+size = 10000
+
+# Increased hinted election percentage to be more aggressive
+hinted_limit_percentage = 25
+
+# Increased optimistic election percentage
+optimistic_limit_percentage = 15
+
+# Larger confirmation history to track more confirmations
+confirmation_history_size = 4096
+
+# Larger confirmation cache
+confirmation_cache = 131072
+
+# ============================================================================
+# CEMENTING SET - Optimized for faster block cementing
+# ============================================================================
+[node.cementing_set]
+# Enable cementing
+enable = true
+
+# Increased batch size from 256 to 1024 for faster cementing
+# This processes 4x more blocks per iteration
+batch_size = 1024
+
+# Increased max blocks in memory
+max_blocks = 262144
+
+# Increased max queued notifications
+max_queued_notifications = 16
+
+# Increased max deferred blocks
+max_deferred = 32768
+
+# Keep deferred blocks for 30 minutes instead of 15
+deferred_age_cutoff = 1800
+
+# ============================================================================
+# BLOCK PROCESSOR - Optimized for faster block processing
+# ============================================================================
+[node.block_processor]
+# Increased batch size from 256 to 1024
+batch_size = 1024
+
+# Increased max peer queue
+max_peer_queue = 256
+
+# Increased max system queue significantly for bootstrap
+max_system_queue = 32768
+
+# Adjusted priorities (lower = processed more often)
+priority_live = 1
+priority_bootstrap = 4
+priority_local = 8
+priority_system = 16
+
+# Keep throttling enabled but with higher limits
+enable_throttling = true
+backlog_threshold = 2.0
+backlog_throttle = 50
+backlog_throttle_max = 5000
+
+# ============================================================================
+# VOTE PROCESSOR - Increased for faster vote processing
+# ============================================================================
+[node.vote_processor]
+# Enable vote processing
+enable = true
+
+# Increased vote queues
+max_pr_queue = 512
+max_non_pr_queue = 64
+
+# PR votes are 4x more important
+pr_priority = 4
+
+# Increased vote processing threads to 8 (you have 24 CPU cores)
+threads = 8
+
+# Increased batch size from 1024 to 4096
+batch_size = 4096
+
+# Increased max triggered
+max_triggered = 32768
+
+# ============================================================================
+# BACKLOG SCAN - Optimized for faster unconfirmed block discovery
+# ============================================================================
+[node.backlog_scan]
+# Enable backlog scanning
+enable = true
+
+# Unlimited rate (0 = no limit) to scan as fast as possible
+rate_limit = 0
+
+# Increased batch size from 1000 to 5000
+batch_size = 5000
+
+# ============================================================================
+# BOUNDED BACKLOG - Adjusted to handle large backlogs
+# ============================================================================
+[node.bounded_backlog]
+# Enable bounded backlog
+enable = true
+
+# Increased batch size for rollbacks
+batch_size = 64
+
+# Increased scan rate
+scan_rate = 128
+
+# ============================================================================
+# OPTIMISTIC SCHEDULER - Optimized for faster optimistic confirmations
+# ============================================================================
+[node.optimistic_scheduler]
+# Enable optimistic scheduler
+enable = true
+
+# Reduced gap threshold to be more aggressive
+gap_threshold = 16
+
+# Increased max size
+max_size = 131072
+
+# ============================================================================
+# HINTED SCHEDULER - Optimized for faster hinted confirmations
+# ============================================================================
+[node.hinted_scheduler]
+# Enable hinted scheduler
+enable = true
+
+# Check more frequently (500ms instead of 1000ms)
+check_interval = 500
+
+# Reduced cooldown to rehint blocks faster
+block_cooldown = 5000
+
+# Lower threshold to hint more aggressively
+hinting_threshold_percent = 5
+
+# Higher vacancy threshold to trigger hinting sooner
+vacancy_threshold_percent = 30
+
+# ============================================================================
+# PRIORITY BUCKET - Optimized for more priority blocks
+# ============================================================================
+[node.priority_bucket]
+# Increased max blocks per bucket
+max_blocks = 16384
+
+# Increased reserved elections
+reserved_elections = 200
+
+# Increased max elections
+max_elections = 300
+
+# ============================================================================
+# GLOBAL NODE SETTINGS
+# ============================================================================
+[node]
+# Increased max backlog to handle large sync
+max_backlog = 200000
+
+# Increased batch processing time
+block_processor_batch_max_time = 1000
+
+# Use all available cores for network threads (24 cores available)
+network_threads = 24
+
+# Use all available cores for background work
+background_threads = 24
+
+# Use 12 cores for signature verification (half of 24)
+signature_checker_threads = 12
+
+# Disable active voting to save resources during bootstrap
+# (you're not a representative, so this just consumes resources)
+enable_voting = false
+
+# ============================================================================
+# WEBSOCKET & RPC - Keep enabled for monitoring
+# ============================================================================
+[node.websocket]
+enable = true
+address = "::1"
+port = 7078
+
+[rpc]
+enable = true
+
+# ============================================================================
+# ADDITIONAL OPTIMIZATIONS
+# ============================================================================
+
+# Increase work peers for faster PoW generation (if needed)
+[node.work_peers]
+# Add work peers if you have any
+
+# Logging - reduced to improve performance
+[node.logging]
+min_time_between_log_output = 5000
