@@ -1131,7 +1131,13 @@ std::deque<std::shared_ptr<nano::block>> nano::ledger::random_blocks (secure::tr
 
 bool nano::ledger::bootstrap_height_reached () const
 {
-	return cache.block_count >= bootstrap_weight_max_blocks;
+	// CRITICAL FIX: Use cemented_count instead of block_count
+	// Nodes should stay in bootstrap mode (using predefined weights) until blocks are CONFIRMED,
+	// not just downloaded. Using block_count caused nodes to switch to live voting mode while
+	// still having millions of unconfirmed historical blocks, which never receive live votes,
+	// causing the node to get stuck forever with 0.00 confirmation rate.
+	// This fix ensures bootstrap mode continues until blocks are actually cemented.
+	return cache.cemented_count >= bootstrap_weight_max_blocks;
 }
 
 std::unordered_map<nano::account, nano::uint128_t> nano::ledger::rep_weights_snapshot () const
