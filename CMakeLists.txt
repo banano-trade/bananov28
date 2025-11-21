@@ -177,7 +177,7 @@ if(NOT ACTIVE_NETWORK IN_LIST VALID_NETWORKS)
 endif()
 
 set(CPACK_PACKAGE_NAME
-    "nano-node"
+    "banano-node"
     CACHE STRING "" FORCE)
 set(CPACK_NSIS_PACKAGE_NAME
     "Banano"
